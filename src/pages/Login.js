@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-// import Game from './Game';
+import { Link } from 'react-router-dom';
 
 class Login extends React.Component {
   state = {
@@ -77,6 +77,14 @@ handleClick = async () => {
             onClick={ this.handleClick }
           />
         </form>
+        <Link to="/settings">
+          <button
+            type="submit"
+            data-testid="btn-settings"
+          >
+            Settings
+          </button>
+        </Link>
       </>
     );
   }
