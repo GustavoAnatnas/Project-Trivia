@@ -61,8 +61,9 @@ export default class Login extends React.Component {
         </form>
         <Link to="/settings">
           <button
+            type="submit"
             data-testid="btn-settings"
-            >
+          >
             Settings
           </button>
         </Link>
@@ -70,5 +71,3 @@ export default class Login extends React.Component {
     );
   }
 }
-
-
