@@ -1,8 +1,10 @@
 import React from 'react'
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import renderWithRouterAndRedux from './renderWithRouterAndRedux';
 import Login from '../../pages/Login'
 import userEvent from '@testing-library/user-event';
+
+afterEach(() => jest.clearAllMocks());
 
 describe('Testa a página de Login - Requisito 1', () => { 
   test('Se há na tela dois input, email e nome, e se são renderizados corretamente', () => { 
@@ -119,6 +121,40 @@ describe('Testa a página de Login - Requisito 1', () => {
     userEvent.type(emailInput, USER_EMAIL);
     userEvent.type(nameInput, USER_NAME); 
 
-    expect(history.location.pathname).not.toBe('/');
+    expect(playButton.disabled).toBe(false);
+    userEvent.click(playButton);
+
+    expect(history.location.pathname).toBe('/game');
+  })
+  test('Se ao apertamos o botão de play a função fetchAPI é requisitada com a URL correta', async () => {
+    const token = {
+    "response_code":0,
+    "response_message":"Token Generated Successfully!",
+    "token":"f00cb469ce38726ee00a7c6836761b0a4fb808181a125dcde6d50a9f3c9127b6"
+    };
+
+    const TOKEN_URL = 'https://opentdb.com/api_token.php?command=request';
+
+    jest.spyOn(global, 'fetch');
+    global.fetch.mockResolvedValue({
+      json: jest.fn().mockResolvedValue(token),
+    });
+  
+    renderWithRouterAndRedux(<Login />);
+    const USER_NAME = 'Aldous Huxley';
+    const USER_EMAIL = 'aldousHuxley@gmail.com';
+
+    const playButton = screen.getByTestId('btn-play');
+    expect(playButton).toBeInTheDocument();
+    expect(playButton.disabled).toBe(true);
+
+    const nameInput = screen.getByTestId('input-player-name');
+    const emailInput = screen.getByTestId('input-gravatar-email');
+    userEvent.type(emailInput, USER_EMAIL);
+    userEvent.type(nameInput, USER_NAME); 
+
+    userEvent.click(playButton);
+    expect(global.fetch).toBeCalledTimes(1)
+    expect(global.fetch).toBeCalledWith(TOKEN_URL);
   })
 })
