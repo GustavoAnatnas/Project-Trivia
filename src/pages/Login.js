@@ -7,6 +7,14 @@ export default class Login extends React.Component {
     disabled: true,
   }
 
+  fetchAPI = async () => {
+    const perguntas = '5';
+    const token = '6d3dd1c6f1e74953a7209f71fa99128702b57479ff27a1ea528f94b1fdd30f19';
+    const response = await fetch(`https://opentdb.com/api.php?amount=${perguntas}&token=${token}`);
+    const data = await response.json();
+    console.log(data);
+  }
+
   handleChange = ({ target: { name, value } }) => {
     this.setState({
       [name]: value,
@@ -56,6 +64,7 @@ export default class Login extends React.Component {
             type="submit"
             disabled={ state.disabled }
             data-testid="btn-play"
+            onClick={ this.fetchAPI }
           />
         </form>
       </>
