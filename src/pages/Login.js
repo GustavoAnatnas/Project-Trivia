@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import { login } from '../redux/action';
 
 class Login extends React.Component {
   state = {
@@ -40,7 +41,8 @@ handleClick = async () => {
   }
 
   render() {
-    const { ...state } = this.state;
+    const { name, gravatarEmail, disabled } = this.state;
+    const { ACTION_LOGIN } = this.props;
     return (
       <>
         <h1>Login</h1>
@@ -50,7 +52,7 @@ handleClick = async () => {
             <input
               type="text"
               name="name"
-              value={ state.name }
+              value={ name }
               onChange={ this.handleChange }
               data-testid="input-player-name"
               id="name"
@@ -62,7 +64,7 @@ handleClick = async () => {
             <input
               type="email"
               name="gravatarEmail"
-              value={ state.gravatarEmail }
+              value={ gravatarEmail }
               onChange={ this.handleChange }
               data-testid="input-gravatar-email"
               id="gravatarEmail"
@@ -72,9 +74,12 @@ handleClick = async () => {
           <input
             value="Play"
             type="button"
-            disabled={ state.disabled }
+            disabled={ disabled }
             data-testid="btn-play"
-            onClick={ this.handleClick }
+            onClick={ () => {
+              ACTION_LOGIN(name, gravatarEmail);
+              this.handleClick();
+            } }
           />
         </form>
         <Link to="/settings">
@@ -89,7 +94,14 @@ handleClick = async () => {
     );
   }
 }
+
 Login.propTypes = {
-  history: PropTypes.shape({ push: PropTypes.func.isRequired }).isRequired,
-};
-export default connect()(Login);
+  history: PropTypes.shape({ push: PropTypes.func.isRequired }),
+  ACTION_LOGIN: PropTypes.func,
+}.isRequired;
+
+const mapDispatchToProps = (dispatch) => ({
+  ACTION_LOGIN: (name, gravatarEmail) => dispatch(login(name, gravatarEmail)),
+});
+
+export default connect(null, mapDispatchToProps)(Login);
