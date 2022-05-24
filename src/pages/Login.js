@@ -1,19 +1,29 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+// import Game from './Game';
 
-export default class Login extends React.Component {
+class Login extends React.Component {
   state = {
     name: '',
     gravatarEmail: '',
     disabled: true,
   }
 
-  fetchAPI = async () => {
-    const perguntas = '5';
-    const token = '6d3dd1c6f1e74953a7209f71fa99128702b57479ff27a1ea528f94b1fdd30f19';
-    const response = await fetch(`https://opentdb.com/api.php?amount=${perguntas}&token=${token}`);
+handleClick = async () => {
+  const {
+    history,
+  } = this.props;
+  try {
+    const url = 'https://opentdb.com/api_token.php?command=request';
+    const response = await fetch(url);
     const data = await response.json();
-    console.log(data);
+    localStorage.setItem('token', data.token);
+  } catch (error) {
+    console.log(error);
   }
+  history.push('/game');
+};
 
   handleChange = ({ target: { name, value } }) => {
     this.setState({
@@ -61,13 +71,17 @@ export default class Login extends React.Component {
           </label>
           <input
             value="Play"
-            type="submit"
+            type="button"
             disabled={ state.disabled }
             data-testid="btn-play"
-            onClick={ this.fetchAPI }
+            onClick={ this.handleClick }
           />
         </form>
       </>
     );
   }
 }
+Login.propTypes = {
+  history: PropTypes.shape({ push: PropTypes.func.isRequired }).isRequired,
+};
+export default connect()(Login);
