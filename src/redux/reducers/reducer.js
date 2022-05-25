@@ -10,10 +10,7 @@ const INITIAL_STATE = {
 export default function player(state = INITIAL_STATE, action) {
   switch (action.type) {
   case LOGIN:
-    return {
-      ...state,
-      ...action.payload,
-    };
+    return { ...state, name: action.name, gravatarEmail: action.gravatarEmail };
   default:
     return state;
   }

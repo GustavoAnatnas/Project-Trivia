@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Header from '../components/Header';
 
 class Game extends React.Component {
   state= {
@@ -55,35 +56,37 @@ class Game extends React.Component {
   render() {
     const { perguntas, shuffledAnswers, currQuestion } = this.state;
     return (
-      <div>
-        <p
-          data-testid="question-category"
-        >
-          {perguntas && perguntas[currQuestion].category}
-        </p>
-        <p
-          data-testid="question-text"
-        >
-          {perguntas && perguntas[currQuestion].question}
-        </p>
-        <section data-testid="answer-options">
-          {
-            shuffledAnswers.map(({ certa, answer }, i) => (
-              certa
-                ? (
-                  <button key={ i } type="button" data-testid="correct-answer">
-                    {answer}
-                  </button>
-                ) : (
-                  <button key={ i } type="button" data-testid={ `wrong-answer-${i}` }>
-                    { answer }
-                  </button>
-                )
-            ))
-          }
-        </section>
-      </div>
-
+      <>
+        <Header />
+        <div>
+          <p
+            data-testid="question-category"
+          >
+            {perguntas && perguntas[currQuestion].category}
+          </p>
+          <p
+            data-testid="question-text"
+          >
+            {perguntas && perguntas[currQuestion].question}
+          </p>
+          <section data-testid="answer-options">
+            {
+              shuffledAnswers.map(({ certa, answer }, i) => (
+                certa
+                  ? (
+                    <button key={ i } type="button" data-testid="correct-answer">
+                      {answer}
+                    </button>
+                  ) : (
+                    <button key={ i } type="button" data-testid={ `wrong-answer-${i}` }>
+                      { answer }
+                    </button>
+                  )
+              ))
+            }
+          </section>
+        </div>
+      </>
     );
   }
 }
