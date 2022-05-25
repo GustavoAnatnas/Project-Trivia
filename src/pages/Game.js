@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 class Game extends React.Component {
   state= {
     perguntas: '',
+    shuffledAnswers: [],
+    currQuestion: 0,
   }
 
   async componentDidMount() {
@@ -20,40 +22,65 @@ class Game extends React.Component {
         return history.push('/');
       } this.setState({
         perguntas: data.results,
-      });
+      }, () => this.shuffleAnswers());
     } catch (error) {
       console.log(error);
     }
     history.push('/game');
   }
 
+  shuffleAnswers = () => {
+    const { perguntas, currQuestion } = this.state;
+    console.log(perguntas);
+    const answers = [
+      ...perguntas[currQuestion].incorrect_answers,
+      perguntas[currQuestion].correct_answer,
+    ];
+    const answersArray = answers.map((answer) => {
+      if (answer === perguntas[currQuestion].correct_answer) {
+        return { certa: true, answer };
+      }
+      return { certa: false, answer };
+    });
+
+    // Utilizada uma solução de https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
+    const ROUND = 0.5;
+    const shuffledAnswers = answersArray.sort(() => Math.random() - ROUND);
+    console.log('shuffledAnswers', shuffledAnswers);
+    this.setState({
+      shuffledAnswers,
+    });
+  }
+
   render() {
-    const { perguntas } = this.state;
+    const { perguntas, shuffledAnswers, currQuestion } = this.state;
     return (
       <div>
         <p
           data-testid="question-category"
         >
-          {perguntas && perguntas[0].category}
+          {perguntas && perguntas[currQuestion].category}
         </p>
         <p
           data-testid="question-text"
         >
-          {perguntas && perguntas[0].question}
+          {perguntas && perguntas[currQuestion].question}
         </p>
         <section data-testid="answer-options">
-          <button type="button" data-testid="correct-answer">
-            { perguntas && perguntas[0].correct_answer }
-          </button>
-          <button type="button" data-testid={ `wrong-answer-${0}` }>
-            { perguntas && perguntas[0].incorrect_answers[0] }
-          </button>
-          <button type="button" data-testid={ `wrong-answer-${1}` }>
-            { perguntas && perguntas[0].incorrect_answers[1] }
-          </button>
-          <button type="button" data-testid={ `wrong-answer-${2}` }>
-            { perguntas && perguntas[0].incorrect_answers[2] }
-          </button>
+          {
+            shuffledAnswers.map(({ certa, answer }, i) => (
+              certa
+                ? (
+                  <button key={ i } type="button" data-testid="correct-answer">
+                    {answer}
+                  </button>
+                ) : (
+                  <button key={ i } type="button" data-testid={ `wrong-answer-${i}` }>
+                    { answer }
+                  </button>
+                )
+            ))
+          }
         </section>
       </div>
 
