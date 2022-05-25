@@ -7,6 +7,7 @@ class Game extends React.Component {
     perguntas: '',
     shuffledAnswers: [],
     currQuestion: 0,
+    respondido: false,
     timer: 30,
   }
 
@@ -77,62 +78,80 @@ class Game extends React.Component {
     });
   }
 
-  render() {
-    const { perguntas, shuffledAnswers, currQuestion, timer } = this.state;
-    return (
-      <>
-        <Header />
-        <div>
-          <p
-            data-testid="question-category"
-          >
-            {perguntas && perguntas[currQuestion].category}
-          </p>
-          <p
-            data-testid="question-text"
-          >
-            {perguntas && perguntas[currQuestion].question}
-          </p>
-          <section data-testid="answer-options">
-            {
-              shuffledAnswers.map(({ certa, answer }, i) => (
-                certa
-                  ? (
-                    <button
-                      key={ i }
-                      type="button"
-                      data-testid="correct-answer"
-                      disabled={ timer === 0 }
-                    >
-                      {answer}
-                    </button>
-                  ) : (
-                    <button
-                      key={ i }
-                      type="button"
-                      data-testid={ `wrong-answer-${i}` }
-                      disabled={ timer === 0 }
-                    >
-                      { answer }
-                    </button>
-                  )
-              ))
-            }
-          </section>
-          {/* {
-            timer === 0 ? null : (
-              <>
-                <span>Timer: </span>
-                <span>{ timer }</span>
-              </>
-            )
-          } */}
-          <span>Timer: </span>
-          <span>{ timer }</span>
-        </div>
-      </>
-    );
-  }
+getAnswer = () => {
+  this.setState({
+    respondido: true,
+  });
+}
+
+nextQuestion = () => {
+  const { currQuestion } = this.state;
+  this.setState({
+    currQuestion: currQuestion + 1,
+    respondido: false,
+  });
+}
+
+render() {
+  const { perguntas, shuffledAnswers, currQuestion, respondido, timer } = this.state;
+  return (
+    <>
+      <Header />
+      <div>
+        <p
+          data-testid="question-category"
+        >
+          {perguntas && perguntas[currQuestion].category}
+        </p>
+        <p
+          data-testid="question-text"
+        >
+          {perguntas && perguntas[currQuestion].question}
+        </p>
+        <section data-testid="answer-options">
+          {
+            shuffledAnswers.map(({ certa, answer }, i) => (
+              certa
+                ? (
+                  <button
+                    key={ i }
+                    type="button"
+                    data-testid="correct-answer"
+                    disabled={ timer === 0 }
+                    onClick={ () => this.getAnswer() }
+                  >
+                    {answer}
+                  </button>
+                ) : (
+                  <button
+                    key={ i }
+                    type="button"
+                    data-testid={ `wrong-answer-${i}` }
+                    disabled={ timer === 0 }
+                    onClick={ () => this.getAnswer() }
+                  >
+                    { answer }
+                  </button>
+                )
+            ))
+          }
+          {respondido && (
+            <button
+              data-testid="btn-next"
+              type="button"
+              onClick={ () => this.nextQuestion() }
+            >
+              Next
+            </button>
+          )}
+
+        </section>
+        <span>Timer: </span>
+        <span>{ timer }</span>
+      </div>
+    </>
+  );
+}
 }
 
 Game.propTypes = {
