@@ -7,6 +7,7 @@ class Game extends React.Component {
     perguntas: '',
     shuffledAnswers: [],
     currQuestion: 0,
+    timer: 30,
   }
 
   async componentDidMount() {
@@ -28,11 +29,35 @@ class Game extends React.Component {
       console.log(error);
     }
     history.push('/game');
+
+    this.countdown();
+  }
+
+  componentDidUpdate() {
+    const { timer } = this.state;
+    if (timer < 0) {
+      clearInterval(this.interval);
+      this.resetCountdown();
+    }
+  }
+
+  countdown = () => {
+    const ONE_SECOND = 1000;
+    this.interval = setInterval(() => {
+      this.setState((prevState) => ({
+        timer: prevState.timer - 1,
+      }));
+    }, ONE_SECOND);
+  }
+
+  resetCountdown = () => {
+    this.setState({
+      timer: 0,
+    });
   }
 
   shuffleAnswers = () => {
     const { perguntas, currQuestion } = this.state;
-    console.log(perguntas);
     const answers = [
       ...perguntas[currQuestion].incorrect_answers,
       perguntas[currQuestion].correct_answer,
@@ -47,14 +72,13 @@ class Game extends React.Component {
     // Utilizada uma solução de https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
     const ROUND = 0.5;
     const shuffledAnswers = answersArray.sort(() => Math.random() - ROUND);
-    console.log('shuffledAnswers', shuffledAnswers);
     this.setState({
       shuffledAnswers,
     });
   }
 
   render() {
-    const { perguntas, shuffledAnswers, currQuestion } = this.state;
+    const { perguntas, shuffledAnswers, currQuestion, timer } = this.state;
     return (
       <>
         <Header />
@@ -74,17 +98,37 @@ class Game extends React.Component {
               shuffledAnswers.map(({ certa, answer }, i) => (
                 certa
                   ? (
-                    <button key={ i } type="button" data-testid="correct-answer">
+                    <button
+                      key={ i }
+                      type="button"
+                      data-testid="correct-answer"
+                      disabled={ timer === 0 }
+                    >
                       {answer}
                     </button>
                   ) : (
-                    <button key={ i } type="button" data-testid={ `wrong-answer-${i}` }>
+                    <button
+                      key={ i }
+                      type="button"
+                      data-testid={ `wrong-answer-${i}` }
+                      disabled={ timer === 0 }
+                    >
                       { answer }
                     </button>
                   )
               ))
             }
           </section>
+          {/* {
+            timer === 0 ? null : (
+              <>
+                <span>Timer: </span>
+                <span>{ timer }</span>
+              </>
+            )
+          } */}
+          <span>Timer: </span>
+          <span>{ timer }</span>
         </div>
       </>
     );
