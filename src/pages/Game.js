@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { ACTION_ADD_SCORE } from '../redux/action';
 import Header from '../components/Header';
 
 class Game extends React.Component {
@@ -77,7 +79,25 @@ class Game extends React.Component {
     });
   }
 
+  calculatePoints = (difficulty) => {
+    const { timer } = this.state;
+    const TEN = 10;
+    const ONE = 1;
+    const TWO = 2;
+    const THREE = 3;
+    let difficultyRate = 1;
+    if (difficulty === 'easy') {
+      difficultyRate = ONE;
+    } else if (difficulty === 'medium') {
+      difficultyRate = TWO;
+    } else {
+      difficultyRate = THREE;
+    }
+    return TEN + (timer * difficultyRate);
+  }
+
   render() {
+    const { addScore } = this.props;
     const { perguntas, shuffledAnswers, currQuestion, timer } = this.state;
     return (
       <>
@@ -103,6 +123,11 @@ class Game extends React.Component {
                       type="button"
                       data-testid="correct-answer"
                       disabled={ timer === 0 }
+                      onClick={
+                        () => addScore(this.calculatePoints(
+                          perguntas[currQuestion].difficulty,
+                        ))
+                      }
                     >
                       {answer}
                     </button>
@@ -119,14 +144,6 @@ class Game extends React.Component {
               ))
             }
           </section>
-          {/* {
-            timer === 0 ? null : (
-              <>
-                <span>Timer: </span>
-                <span>{ timer }</span>
-              </>
-            )
-          } */}
           <span>Timer: </span>
           <span>{ timer }</span>
         </div>
@@ -136,7 +153,16 @@ class Game extends React.Component {
 }
 
 Game.propTypes = {
-  history: PropTypes.shape({ push: PropTypes.func.isRequired }).isRequired,
-};
+  history: PropTypes.shape({ push: PropTypes.func.isRequired }),
+  add: PropTypes.func,
+}.isRequired;
 
-export default Game;
+// const mapStateToProps = ({ player: { score } }) => ({
+//   score,
+// });
+
+const mapDispatchToProps = (dispatch) => ({
+  addScore: (score) => dispatch(ACTION_ADD_SCORE(score)),
+});
+
+export default connect(null, mapDispatchToProps)(Game);
