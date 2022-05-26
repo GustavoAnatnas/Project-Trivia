@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { ACTION_ADD_SCORE } from '../redux/action';
 import Header from '../components/Header';
 import './Style.css';
 
@@ -9,6 +11,8 @@ class Game extends React.Component {
     shuffledAnswers: [],
     currQuestion: 0,
     answersOptions: true,
+    respondido: false,
+    timer: 30,
   }
 
   async componentDidMount() {
@@ -30,11 +34,41 @@ class Game extends React.Component {
       console.log(error);
     }
     history.push('/game');
+
+    this.startCountdown();
+  }
+
+  componentDidUpdate() {
+    const { timer } = this.state;
+    if (timer < 0) {
+      clearInterval(this.interval);
+      this.stopCountdown();
+    }
+  }
+
+  startCountdown = () => {
+    const ONE_SECOND = 1000;
+    this.interval = setInterval(() => {
+      this.setState((prevState) => ({
+        timer: prevState.timer - 1,
+      }));
+    }, ONE_SECOND);
+  }
+
+  stopCountdown = () => {
+    this.setState({
+      timer: 0,
+    }, () => clearInterval(this.interval));
+  }
+
+  resetCountdown = () => {
+    this.setState({
+      timer: 30,
+    });
   }
 
   shuffleAnswers = () => {
     const { perguntas, currQuestion } = this.state;
-    console.log(perguntas);
     const answers = [
       ...perguntas[currQuestion].incorrect_answers,
       perguntas[currQuestion].correct_answer,
@@ -49,7 +83,6 @@ class Game extends React.Component {
     // Utilizada uma solução de https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
     const ROUND = 0.5;
     const shuffledAnswers = answersArray.sort(() => Math.random() - ROUND);
-    console.log('shuffledAnswers', shuffledAnswers);
     this.setState({
       shuffledAnswers,
     });
@@ -57,8 +90,48 @@ class Game extends React.Component {
 
   handleAnswers = () => this.setState({ answersOptions: false });
 
+  calculatePoints = (difficulty) => {
+    const { timer } = this.state;
+    const TEN = 10;
+    const ONE = 1;
+    const TWO = 2;
+    const THREE = 3;
+    let difficultyRate = 1;
+    if (difficulty === 'easy') {
+      difficultyRate = ONE;
+    } else if (difficulty === 'medium') {
+      difficultyRate = TWO;
+    } else {
+      difficultyRate = THREE;
+    }
+    return TEN + (timer * difficultyRate);
+  }
+
+  getAnswer = () => {
+    this.setState({
+      respondido: true,
+    }, () => clearInterval(this.interval));
+  }
+
+  nextQuestion = () => {
+    const { currQuestion } = this.state;
+    this.setState({
+      currQuestion: currQuestion + 1,
+      respondido: false,
+    }, () => {
+      this.shuffleAnswers();
+      this.resetCountdown();
+      this.startCountdown();
+    });
+  }
+
   render() {
-    const { perguntas, shuffledAnswers, currQuestion, answersOptions } = this.state;
+    const { addScore, history } = this.props;
+    const { perguntas, shuffledAnswers,
+      currQuestion, respondido, timer,
+      answersOptions,
+    } = this.state;
+    const FOUR = 4;
     return (
       <>
         <Header />
@@ -79,32 +152,58 @@ class Game extends React.Component {
                 certa
                   ? (
                     <button
-                      onClick={ this.handleAnswers }
+                      key={ i }
                       className={
                         !answersOptions && 'correctAnswer'
                       }
-                      key={ i }
                       type="button"
                       data-testid="correct-answer"
+                      disabled={ timer === 0 }
+                      onClick={ () => {
+                        addScore(this.calculatePoints(
+                          perguntas[currQuestion].difficulty,
+                        ));
+                        this.getAnswer();
+                        this.handleAnswers();
+                      } }
                     >
                       {answer}
                     </button>
                   ) : (
                     <button
-                      onClick={ this.handleAnswers }
+                      key={ i }
                       className={
                         !answersOptions && 'wrongAnswer'
                       }
-                      key={ i }
                       type="button"
                       data-testid={ `wrong-answer-${i}` }
+                      disabled={ timer === 0 }
+                      onClick={ () => {
+                        this.getAnswer();
+                        this.handleAnswers();
+                      } }
                     >
                       { answer }
                     </button>
                   )
               ))
             }
+            {(respondido || timer === 0) && (
+              <button
+                data-testid="btn-next"
+                type="button"
+                onClick={ currQuestion !== FOUR
+                  ? () => this.nextQuestion()
+                  : () => history.push('/feedback') }
+              >
+                Next
+              </button>
+            ) }
           </section>
+          <div className="timer">
+            <span>Timer: </span>
+            <span>{ timer }</span>
+          </div>
         </div>
       </>
     );
@@ -112,7 +211,12 @@ class Game extends React.Component {
 }
 
 Game.propTypes = {
-  history: PropTypes.shape({ push: PropTypes.func.isRequired }).isRequired,
-};
+  history: PropTypes.shape({ push: PropTypes.func.isRequired }),
+  add: PropTypes.func,
+}.isRequired;
 
-export default Game;
+const mapDispatchToProps = (dispatch) => ({
+  addScore: (score) => dispatch(ACTION_ADD_SCORE(score)),
+});
+
+export default connect(null, mapDispatchToProps)(Game);
