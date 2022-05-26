@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { ACTION_RESET_SCORE } from '../redux/action';
 import Header from '../components/Header';
 import Scoreboard from '../components/Scoreboard';
 
@@ -31,7 +32,7 @@ class Feedback extends Component {
   }
 
   render() {
-    const { assertions } = this.props;
+    const { assertions, resetScore } = this.props;
     const THREE = 3;
     return (
       <>
@@ -52,6 +53,7 @@ class Feedback extends Component {
           <button
             type="submit"
             data-testid="btn-play-again"
+            onClick={ () => resetScore() }
           >
             Play Again
           </button>
@@ -63,6 +65,8 @@ class Feedback extends Component {
 
 Feedback.propTypes = {
   assertions: PropTypes.number,
+  resetScore: PropTypes.func,
+
 }.isRequired;
 
 const mapStateToProps = ({ player: { name, assertions, score, gravatarHash } }) => ({
@@ -72,4 +76,8 @@ const mapStateToProps = ({ player: { name, assertions, score, gravatarHash } }) 
   gravatarHash,
 });
 
-export default connect(mapStateToProps, null)(Feedback);
+const mapDispatchToProps = (dispatch) => ({
+  resetScore: () => dispatch(ACTION_RESET_SCORE()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Feedback);
