@@ -3,6 +3,7 @@ import { screen, waitFor } from '@testing-library/react';
 import renderWithRouterAndRedux from './renderWithRouterAndRedux';
 import Login from '../../pages/Login'
 import userEvent from '@testing-library/user-event';
+import Settings from '../../pages/Settings';
 
 afterEach(() => jest.clearAllMocks());
 
@@ -158,3 +159,28 @@ describe('Testa a página de Login - Requisito 1', () => {
     expect(global.fetch).toBeCalledWith(TOKEN_URL);
   })
 })
+describe('Testa página Settings', () => { 
+  test('Se existe um botão para acessar o ranking', () => { 
+    const { history } = renderWithRouterAndRedux(<Login />);
+
+    const USER_NAME = 'Aldous Huxley';
+    const USER_EMAIL = 'aldousHuxley@gmail.com';
+
+    const settingsButton = screen.getByTestId('btn-settings');
+    expect(settingsButton).toBeInTheDocument();
+
+    const nameInput = screen.getByTestId('input-player-name');
+    const emailInput = screen.getByTestId('input-gravatar-email');
+    userEvent.type(emailInput, USER_EMAIL);
+    userEvent.type(nameInput, USER_NAME); 
+
+    userEvent.click(settingsButton);
+
+    expect(history.location.pathname).toBe('/settings');
+  })
+  test('Se possui um titulo escrtio "Configurações"', () => { 
+    const { history } = renderWithRouterAndRedux(<Settings />);
+    const title = screen.getByRole('heading', { name: 'Configurações', level: 1});
+    expect(title).toBeInTheDocument();
+  })
+  })

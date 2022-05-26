@@ -3,12 +3,38 @@ import { screen } from '@testing-library/react';
 import renderWithRouterAndRedux from './renderWithRouterAndRedux';
 import Feedback from '../../pages/Feedback'
 import userEvent from '@testing-library/user-event';
+import Login from '../../pages/Login';
 
 describe('Testa página Feedback itens do Requisito 12', () => { 
- test('Se é renderizada no caminho esperado', () => { 
-  const { history: {location: {pathname}} } = renderWithRouterAndRedux(<Feedback />);
-  expect(pathname).toBe('/feedback');
-  })
+ test('Se é renderizada no caminho correto', () => { 
+  const { history } = renderWithRouterAndRedux(<Login />);
+  const QUESTIONS = 4;
+  const USER_NAME = 'Aldous Huxley';
+  const USER_EMAIL = 'aldousHuxley@gmail.com';
+
+  const playButton = screen.getByTestId('btn-play');
+  expect(playButton).toBeInTheDocument();
+  expect(playButton.disabled).toBe(true);
+
+  const nameInput = screen.getByTestId('input-player-name');
+  const emailInput = screen.getByTestId('input-gravatar-email');
+  userEvent.type(emailInput, USER_EMAIL);
+  userEvent.type(nameInput, USER_NAME); 
+
+  userEvent.click(playButton);
+
+  // expect(history.location.pathname).toBe('/game');
+
+  for(let i = 0; i < QUESTIONS; i+=1) {
+   const correctAswer = screen.getByTestId('correct-answer');
+   userEvent.click(correctAswer);
+   const nextBtn = screen.getByTestId('btn-next');
+   userEvent.click(nextBtn);
+  }
+
+  expect(history.location.pathname).toBe('/feedback');
+
+ })
  test('Se as informações do jogador estão presente no Header', () => { 
   renderWithRouterAndRedux(<Feedback />);
 
@@ -34,10 +60,19 @@ describe('Testa página Feedback itens do Requisito 13', () => {
   const messageToUser = screen.getByText("Could be better...");
 
   expect(messageToUser).toBeInTheDocument();
+  })
+  test('Se a mensagem para o usuário é renderizada corretamente caso acerte mais de 3 perguntas', () => { 
+  const { queryByTestId } = renderWithRouterAndRedux(<Feedback />, { initialState:{ rootReducer: {
+   name: 'Aldous',
+   assertions: 4,
+   score: 320,
+   gravatarEmail: 'aldousHuxley@gmail.com',
+   gravatarHash: '',
+  }} })
 
+  const messageToUser = screen.getByText('Well Done!');
 
-  // Como cada acerto conta ponto e erro não
-  
+  expect(messageToUser).toBeInTheDocument('Well Done!');
   })
 })
 describe('Testa página Feedback itens do Requisito 14 - Se a tela de Feedback exibe informações sobre o desempenho do jogador', () => { 
@@ -120,3 +155,39 @@ describe('Testa página Feedback itens do Requisito 14 - Se a tela de Feedback e
     expect(typeof(score)).toBe('number')
    })
 })
+describe('Testa página Feedback itens do Requisito 15', () => { 
+ test('Se existe um botão para jogar novamente', () => { 
+  const { history } = renderWithRouterAndRedux(<Feedback />);
+
+  const playAgainBtn = screen.getByTestId('btn-play-again');
+  expect(playAgainBtn).toBeInTheDocument();
+  })
+ test('Se o jogador é redirecionado para a página de Login ao apertar no botão', () => { 
+  const { history } = renderWithRouterAndRedux(<Feedback />);
+
+  const playAgainBtn = screen.getByTestId('btn-play-again');
+  expect(playAgainBtn).toBeInTheDocument();
+
+  userEvent.click(playAgainBtn);
+
+  expect(history.location.pathname).toBe('/');
+ })
+ })
+ describe('Testa página Feedback itens do Requisito 16', () => { 
+  test('Se existe um botão para acessar o ranking', () => { 
+   renderWithRouterAndRedux(<Feedback />);
+ 
+   const rankingBtn = screen.getByTestId('btn-ranking');
+   expect(rankingBtn).toBeInTheDocument();
+   })
+  test('Se o jogador é redirecionado para a página de Ranking ao apertar no botão', () => { 
+   const { history } = renderWithRouterAndRedux(<Feedback />);
+ 
+   const rankingBtn = screen.getByTestId('btn-ranking');
+   expect(rankingBtn).toBeInTheDocument();
+ 
+   userEvent.click(rankingBtn);
+ 
+   expect(history.location.pathname).toBe('/ranking');
+  })
+  })
