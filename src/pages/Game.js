@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { ACTION_ADD_SCORE } from '../redux/action';
 import Header from '../components/Header';
 
 class Game extends React.Component {
@@ -78,84 +80,113 @@ class Game extends React.Component {
     });
   }
 
-getAnswer = () => {
-  this.setState({
-    respondido: true,
-  });
-}
+  calculatePoints = (difficulty) => {
+    const { timer } = this.state;
+    const TEN = 10;
+    const ONE = 1;
+    const TWO = 2;
+    const THREE = 3;
+    let difficultyRate = 1;
+    if (difficulty === 'easy') {
+      difficultyRate = ONE;
+    } else if (difficulty === 'medium') {
+      difficultyRate = TWO;
+    } else {
+      difficultyRate = THREE;
+    }
+    return TEN + (timer * difficultyRate);
+  }
 
-nextQuestion = () => {
-  const { currQuestion } = this.state;
-  this.setState({
-    currQuestion: currQuestion + 1,
-    respondido: false,
-  });
-}
+  getAnswer = () => {
+    this.setState({
+      respondido: true,
+    });
+  }
 
-render() {
-  const { perguntas, shuffledAnswers, currQuestion, respondido, timer } = this.state;
-  return (
-    <>
-      <Header />
-      <div>
-        <p
-          data-testid="question-category"
-        >
-          {perguntas && perguntas[currQuestion].category}
-        </p>
-        <p
-          data-testid="question-text"
-        >
-          {perguntas && perguntas[currQuestion].question}
-        </p>
-        <section data-testid="answer-options">
-          {
-            shuffledAnswers.map(({ certa, answer }, i) => (
-              certa
-                ? (
-                  <button
-                    key={ i }
-                    type="button"
-                    data-testid="correct-answer"
-                    disabled={ timer === 0 }
-                    onClick={ () => this.getAnswer() }
-                  >
-                    {answer}
-                  </button>
-                ) : (
-                  <button
-                    key={ i }
-                    type="button"
-                    data-testid={ `wrong-answer-${i}` }
-                    disabled={ timer === 0 }
-                    onClick={ () => this.getAnswer() }
-                  >
-                    { answer }
-                  </button>
-                )
-            ))
-          }
-          {respondido && (
-            <button
-              data-testid="btn-next"
-              type="button"
-              onClick={ () => this.nextQuestion() }
-            >
-              Next
-            </button>
-          )}
+  nextQuestion = () => {
+    const { currQuestion } = this.state;
+    this.setState({
+      currQuestion: currQuestion + 1,
+      respondido: false,
+    });
+  }
 
-        </section>
-        <span>Timer: </span>
-        <span>{ timer }</span>
-      </div>
-    </>
-  );
-}
+  render() {
+    const { addScore } = this.props;
+    const { perguntas, shuffledAnswers, currQuestion, respondido, timer } = this.state;
+    return (
+      <>
+        <Header />
+        <div>
+          <p
+            data-testid="question-category"
+          >
+            {perguntas && perguntas[currQuestion].category}
+          </p>
+          <p
+            data-testid="question-text"
+          >
+            {perguntas && perguntas[currQuestion].question}
+          </p>
+          <section data-testid="answer-options">
+            {
+              shuffledAnswers.map(({ certa, answer }, i) => (
+                certa
+                  ? (
+                    <button
+                      key={ i }
+                      type="button"
+                      data-testid="correct-answer"
+                      disabled={ timer === 0 }
+                      onClick={ () => {
+                        addScore(this.calculatePoints(
+                          perguntas[currQuestion].difficulty,
+                        ));
+                        this.getAnswer();
+                      } }
+                    >
+                      {answer}
+                    </button>
+                  ) : (
+                    <button
+                      key={ i }
+                      type="button"
+                      data-testid={ `wrong-answer-${i}` }
+                      disabled={ timer === 0 }
+                      onClick={ () => this.getAnswer() }
+                    >
+                      { answer }
+                    </button>
+                  )
+              ))
+            }
+            {respondido && (
+              <button
+                data-testid="btn-next"
+                type="button"
+                onClick={ () => this.nextQuestion() }
+              >
+                Next
+              </button>
+            )}
+          </section>
+          <div className="timer">
+            <span>Timer: </span>
+            <span>{ timer }</span>
+          </div>
+        </div>
+      </>
+    );
+  }
 }
 
 Game.propTypes = {
-  history: PropTypes.shape({ push: PropTypes.func.isRequired }).isRequired,
-};
+  history: PropTypes.shape({ push: PropTypes.func.isRequired }),
+  add: PropTypes.func,
+}.isRequired;
 
-export default Game;
+const mapDispatchToProps = (dispatch) => ({
+  addScore: (score) => dispatch(ACTION_ADD_SCORE(score)),
+});
+
+export default connect(null, mapDispatchToProps)(Game);
