@@ -118,6 +118,7 @@ class Game extends React.Component {
     this.setState({
       currQuestion: currQuestion + 1,
       respondido: false,
+      answersOptions: true,
     }, () => {
       this.shuffleAnswers();
       this.resetCountdown();
@@ -154,11 +155,11 @@ class Game extends React.Component {
                     <button
                       key={ i }
                       className={
-                        !answersOptions && 'correctAnswer'
+                        !answersOptions ? 'correctAnswer' : null
                       }
                       type="button"
                       data-testid="correct-answer"
-                      disabled={ timer === 0 }
+                      disabled={ timer === 0 || respondido }
                       onClick={ () => {
                         addScore(this.calculatePoints(
                           perguntas[currQuestion].difficulty,
@@ -173,11 +174,11 @@ class Game extends React.Component {
                     <button
                       key={ i }
                       className={
-                        !answersOptions && 'wrongAnswer'
+                        !answersOptions ? 'wrongAnswer' : null
                       }
                       type="button"
                       data-testid={ `wrong-answer-${i}` }
-                      disabled={ timer === 0 }
+                      disabled={ timer === 0 || respondido }
                       onClick={ () => {
                         this.getAnswer();
                         this.handleAnswers();

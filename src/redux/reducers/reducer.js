@@ -1,4 +1,4 @@
-import { LOGIN, ADD_SCORE, SAVE_HASH } from '../action';
+import { LOGIN, ADD_SCORE, SAVE_HASH, RESET_SCORE } from '../action';
 
 const INITIAL_STATE = {
   name: '',
@@ -18,6 +18,8 @@ export default function player(state = INITIAL_STATE, action) {
     };
   case SAVE_HASH:
     return { ...state, gravatarHash: action.gravatarHash };
+  case RESET_SCORE:
+    return { ...state, score: 0, assertions: 0 };
   default:
     return state;
   }
