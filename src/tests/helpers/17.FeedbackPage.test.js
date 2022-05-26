@@ -190,4 +190,13 @@ describe('Testa página Feedback itens do Requisito 15', () => {
  
    expect(history.location.pathname).toBe('/ranking');
   })
+  test('Se o desempenho do jogador é gravado no localstorage', () => { 
+    renderWithRouterAndRedux(<Feedback />);
+   
+    jest.spyOn(window.localStorage.__proto__, 'getItem');
+    jest.spyOn(window.localStorage.__proto__, 'setItem')
+    
+    expect(localStorage.getItem).toHaveBeenCalled();
+    expect(localStorage.setItem).toHaveBeenCalled();
+   })
   })
