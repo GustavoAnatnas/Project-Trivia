@@ -3,12 +3,14 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { ACTION_ADD_SCORE } from '../redux/action';
 import Header from '../components/Header';
+import './Style.css';
 
 class Game extends React.Component {
   state= {
     perguntas: '',
     shuffledAnswers: [],
     currQuestion: 0,
+    answersOptions: true,
     respondido: false,
     timer: 30,
   }
@@ -86,6 +88,8 @@ class Game extends React.Component {
     });
   }
 
+  handleAnswers = () => this.setState({ answersOptions: false });
+
   calculatePoints = (difficulty) => {
     const { timer } = this.state;
     const TEN = 10;
@@ -123,7 +127,10 @@ class Game extends React.Component {
 
   render() {
     const { addScore, history } = this.props;
-    const { perguntas, shuffledAnswers, currQuestion, respondido, timer } = this.state;
+    const { perguntas, shuffledAnswers,
+      currQuestion, respondido, timer,
+      answersOptions,
+    } = this.state;
     const FOUR = 4;
     return (
       <>
@@ -146,6 +153,9 @@ class Game extends React.Component {
                   ? (
                     <button
                       key={ i }
+                      className={
+                        !answersOptions && 'correctAnswer'
+                      }
                       type="button"
                       data-testid="correct-answer"
                       disabled={ timer === 0 }
@@ -154,6 +164,7 @@ class Game extends React.Component {
                           perguntas[currQuestion].difficulty,
                         ));
                         this.getAnswer();
+                        this.handleAnswers();
                       } }
                     >
                       {answer}
@@ -161,10 +172,16 @@ class Game extends React.Component {
                   ) : (
                     <button
                       key={ i }
+                      className={
+                        !answersOptions && 'wrongAnswer'
+                      }
                       type="button"
                       data-testid={ `wrong-answer-${i}` }
                       disabled={ timer === 0 }
-                      onClick={ () => this.getAnswer() }
+                      onClick={ () => {
+                        this.getAnswer();
+                        this.handleAnswers();
+                      } }
                     >
                       { answer }
                     </button>
