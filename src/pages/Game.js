@@ -1,12 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Header from '../components/Header';
+import './Style.css';
 
 class Game extends React.Component {
   state= {
     perguntas: '',
     shuffledAnswers: [],
     currQuestion: 0,
+    answersOptions: true,
   }
 
   async componentDidMount() {
@@ -53,8 +55,10 @@ class Game extends React.Component {
     });
   }
 
+  handleAnswers = () => this.setState({ answersOptions: false });
+
   render() {
-    const { perguntas, shuffledAnswers, currQuestion } = this.state;
+    const { perguntas, shuffledAnswers, currQuestion, answersOptions } = this.state;
     return (
       <>
         <Header />
@@ -74,11 +78,27 @@ class Game extends React.Component {
               shuffledAnswers.map(({ certa, answer }, i) => (
                 certa
                   ? (
-                    <button key={ i } type="button" data-testid="correct-answer">
+                    <button
+                      onClick={ this.handleAnswers }
+                      className={
+                        !answersOptions && 'correctAnswer'
+                      }
+                      key={ i }
+                      type="button"
+                      data-testid="correct-answer"
+                    >
                       {answer}
                     </button>
                   ) : (
-                    <button key={ i } type="button" data-testid={ `wrong-answer-${i}` }>
+                    <button
+                      onClick={ this.handleAnswers }
+                      className={
+                        !answersOptions && 'wrongAnswer'
+                      }
+                      key={ i }
+                      type="button"
+                      data-testid={ `wrong-answer-${i}` }
+                    >
                       { answer }
                     </button>
                   )
