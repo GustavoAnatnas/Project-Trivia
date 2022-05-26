@@ -6,6 +6,30 @@ import Header from '../components/Header';
 import Scoreboard from '../components/Scoreboard';
 
 class Feedback extends Component {
+  componentDidMount() {
+    this.checkLocalStorage();
+  }
+
+  getRanking = () => JSON.parse(localStorage.getItem('ranking'));
+
+  saveRanking = () => {
+    const { name, score, gravatarHash } = this.props;
+    const playerRank = {
+      name,
+      score,
+      gravatarHash: `https://www.gravatar.com/avatar/${gravatarHash}`,
+    };
+    const prevRanking = this.getRanking();
+    const ranking = [...prevRanking, playerRank];
+    localStorage.setItem('ranking', JSON.stringify(ranking));
+  }
+
+  checkLocalStorage() {
+    if (!JSON.parse(localStorage.getItem('ranking'))) {
+      localStorage.setItem('ranking', JSON.stringify([]));
+    } this.saveRanking();
+  }
+
   render() {
     const { assertions } = this.props;
     const THREE = 3;
@@ -41,8 +65,11 @@ Feedback.propTypes = {
   assertions: PropTypes.number,
 }.isRequired;
 
-const mapStateToProps = ({ player: { assertions } }) => ({
+const mapStateToProps = ({ player: { name, assertions, score, gravatarHash } }) => ({
+  name,
   assertions,
+  score,
+  gravatarHash,
 });
 
 export default connect(mapStateToProps, null)(Feedback);
