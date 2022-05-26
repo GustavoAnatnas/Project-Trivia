@@ -9,6 +9,7 @@ class Game extends React.Component {
     perguntas: '',
     shuffledAnswers: [],
     currQuestion: 0,
+    respondido: false,
     timer: 30,
   }
 
@@ -96,9 +97,23 @@ class Game extends React.Component {
     return TEN + (timer * difficultyRate);
   }
 
+  getAnswer = () => {
+    this.setState({
+      respondido: true,
+    });
+  }
+
+  nextQuestion = () => {
+    const { currQuestion } = this.state;
+    this.setState({
+      currQuestion: currQuestion + 1,
+      respondido: false,
+    });
+  }
+
   render() {
     const { addScore } = this.props;
-    const { perguntas, shuffledAnswers, currQuestion, timer } = this.state;
+    const { perguntas, shuffledAnswers, currQuestion, respondido, timer } = this.state;
     return (
       <>
         <Header />
@@ -123,11 +138,12 @@ class Game extends React.Component {
                       type="button"
                       data-testid="correct-answer"
                       disabled={ timer === 0 }
-                      onClick={
-                        () => addScore(this.calculatePoints(
+                      onClick={ () => {
+                        addScore(this.calculatePoints(
                           perguntas[currQuestion].difficulty,
-                        ))
-                      }
+                        ));
+                        this.getAnswer();
+                      } }
                     >
                       {answer}
                     </button>
@@ -137,15 +153,27 @@ class Game extends React.Component {
                       type="button"
                       data-testid={ `wrong-answer-${i}` }
                       disabled={ timer === 0 }
+                      onClick={ () => this.getAnswer() }
                     >
                       { answer }
                     </button>
                   )
               ))
             }
+            {respondido && (
+              <button
+                data-testid="btn-next"
+                type="button"
+                onClick={ () => this.nextQuestion() }
+              >
+                Next
+              </button>
+            )}
           </section>
-          <span>Timer: </span>
-          <span>{ timer }</span>
+          <div className="timer">
+            <span>Timer: </span>
+            <span>{ timer }</span>
+          </div>
         </div>
       </>
     );
@@ -156,10 +184,6 @@ Game.propTypes = {
   history: PropTypes.shape({ push: PropTypes.func.isRequired }),
   add: PropTypes.func,
 }.isRequired;
-
-// const mapStateToProps = ({ player: { score } }) => ({
-//   score,
-// });
 
 const mapDispatchToProps = (dispatch) => ({
   addScore: (score) => dispatch(ACTION_ADD_SCORE(score)),
