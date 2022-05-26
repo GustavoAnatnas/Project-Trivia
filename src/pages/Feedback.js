@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Header from '../components/Header';
 import Scoreboard from '../components/Scoreboard';
@@ -11,6 +12,14 @@ class Feedback extends Component {
     return (
       <>
         <Header />
+        <div>
+          <Link
+            to="/ranking"
+            data-testid="btn-ranking"
+          >
+            Ranking
+          </Link>
+        </div>
         <h1 data-testid="feedback-text">
           {assertions >= THREE ? 'Well Done!' : 'Could be better...'}
         </h1>
