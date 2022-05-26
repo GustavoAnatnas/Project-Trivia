@@ -2,27 +2,21 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import md5 from 'crypto-js/md5';
+import { ACTION_SAVE_HASH } from '../redux/action';
 
 class Header extends Component {
-  state = {
-    gravatarHash: '',
-  }
-
   componentDidMount() {
     this.generateGravatarHash();
   }
 
   generateGravatarHash = () => {
-    const { gravatarEmail } = this.props;
+    const { gravatarEmail, saveGravatarHash } = this.props;
     const gravatarHash = md5(gravatarEmail).toString();
-    this.setState({
-      gravatarHash,
-    });
+    saveGravatarHash(gravatarHash);
   }
 
   render() {
-    const { gravatarHash } = this.state;
-    const { name, score } = this.props;
+    const { name, score, gravatarHash } = this.props;
     return (
       <>
         <img
@@ -47,10 +41,15 @@ Header.propTypes = {
   gravatarEmail: PropTypes.string,
 }.isRequired;
 
-const mapStateToProps = ({ player: { name, score, gravatarEmail } }) => ({
+const mapStateToProps = ({ player: { name, score, gravatarEmail, gravatarHash } }) => ({
   name,
   score,
   gravatarEmail,
+  gravatarHash,
 });
 
-export default connect(mapStateToProps, null)(Header);
+const mapDispatchToProps = (dispatch) => ({
+  saveGravatarHash: (gravatarHash) => dispatch(ACTION_SAVE_HASH(gravatarHash)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header);
