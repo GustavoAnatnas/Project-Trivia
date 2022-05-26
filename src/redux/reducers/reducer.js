@@ -12,7 +12,7 @@ export default function player(state = INITIAL_STATE, action) {
   case LOGIN:
     return { ...state, name: action.name, gravatarEmail: action.gravatarEmail };
   case ADD_SCORE:
-    return { ...state, score: action.score };
+    return { ...state, score: state.score + action.score };
   default:
     return state;
   }
