@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import md5 from 'crypto-js/md5';
 import { ACTION_SAVE_HASH } from '../redux/action';
-import Logout from './Logout';
 
 class Header extends Component {
   componentDidMount() {
@@ -32,7 +31,6 @@ class Header extends Component {
         <span data-testid="header-score">
           {score}
         </span>
-        <Logout />
       </>
     );
   }
