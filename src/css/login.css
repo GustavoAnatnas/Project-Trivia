@@ -1,0 +1,56 @@
+/* stylelint-disable max-line-length */
+body {
+  background-image: linear-gradient(to right top, #d16ba5, #c777b9, #ba83ca, #aa8fd8, #9a9ae1, #8aa7ec, #79b3f4, #69bff8, #52cffe, #41dfff, #46eefa, #5ffbf1);
+  height: 100vh;
+}
+
+label {
+  color: black;
+  font-size: larger;
+  font-weight: 700;
+  padding: 3%;
+}
+
+.bodyLog {
+  align-content: center;
+  align-items: stretch;
+  background-color: rgba(255, 255, 255, 0.862);
+  border: 2px solid black;
+  border-radius: 10px;
+  box-shadow: 9px 3px 20px 1px rgb(0 0 0 / 90%);
+  display: flex;
+  flex-direction: column;
+  height: 400px;
+  justify-content: center;
+  left: 40%;
+  padding: 5px;
+  padding-left: 20px;
+  position: absolute;
+  text-align: left;
+  top: 27%;
+  width: 370px;
+}
+
+input {
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 15px;
+  padding: 5px;
+}
+
+.button {
+  border: 2px solid black;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: small;
+  margin-bottom: 15px;
+  padding: 5px;
+  transition-duration: 0.4s;
+  width: 80px;
+}
+
+.button:hover {
+  background-color: rgb(178, 153, 220);
+  color: white;
+}
+

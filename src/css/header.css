@@ -1,0 +1,27 @@
+.header {
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.862);
+  border: white;
+  border-radius: 30px;
+  color: black;
+  display: flex;
+  font-size: larger;
+  justify-content: space-evenly;
+  margin: auto;
+  width: 30%;
+}
+
+.photo {
+  border-radius: 30px;
+}
+
+.logo-game {
+  background-color: white;
+  border-radius: 4px;
+  bottom: 2%;
+  box-shadow: inset 0 0 20px 10px #aa8fd8 , 0 0 20px 5px rgba(82, 208, 254, 0.488);
+  display: flex;
+  left: 45%;
+  margin: auto;
+  position: absolute;
+}

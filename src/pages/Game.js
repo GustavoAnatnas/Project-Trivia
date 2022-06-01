@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { ACTION_ADD_SCORE } from '../redux/action';
 import Header from '../components/Header';
+import '../css/game.css';
 import './Style.css';
 
 class Game extends React.Component {
@@ -136,76 +137,81 @@ class Game extends React.Component {
     return (
       <>
         <Header />
-        <div>
-          <p
-            data-testid="question-category"
-          >
-            {perguntas && perguntas[currQuestion].category}
-          </p>
-          <p
-            data-testid="question-text"
-          >
-            {perguntas && perguntas[currQuestion].question}
-          </p>
-          <section data-testid="answer-options">
-            {
-              shuffledAnswers.map(({ certa, answer }, i) => (
-                certa
-                  ? (
-                    <button
-                      key={ i }
-                      className={
-                        !answersOptions ? 'correctAnswer' : null
-                      }
-                      type="button"
-                      data-testid="correct-answer"
-                      disabled={ timer === 0 || respondido }
-                      onClick={ () => {
-                        addScore(this.calculatePoints(
-                          perguntas[currQuestion].difficulty,
-                        ));
-                        this.getAnswer();
-                        this.handleAnswers();
-                      } }
-                    >
-                      {answer}
-                    </button>
-                  ) : (
-                    <button
-                      key={ i }
-                      className={
-                        !answersOptions ? 'wrongAnswer' : null
-                      }
-                      type="button"
-                      data-testid={ `wrong-answer-${i}` }
-                      disabled={ timer === 0 || respondido }
-                      onClick={ () => {
-                        this.getAnswer();
-                        this.handleAnswers();
-                      } }
-                    >
-                      { answer }
-                    </button>
-                  )
-              ))
-            }
-            {(respondido || timer === 0) && (
-              <button
-                data-testid="btn-next"
-                type="button"
-                onClick={ currQuestion !== FOUR
-                  ? () => this.nextQuestion()
-                  : () => history.push('/feedback') }
-              >
-                Next
-              </button>
-            ) }
-          </section>
-          <div className="timer">
-            <span>Timer: </span>
-            <span>{ timer }</span>
+        <section className="body">
+          <div className="game">
+            <h1
+              className="question-category"
+              data-testid="question-category"
+            >
+              {perguntas && perguntas[currQuestion].category}
+            </h1>
+            <p
+              className="question-text"
+              data-testid="question-text"
+            >
+              {perguntas && perguntas[currQuestion].question}
+            </p>
+            <section data-testid="answer-options">
+              {
+                shuffledAnswers.map(({ certa, answer }, i) => (
+                  certa
+                    ? (
+                      <button
+                        key={ i }
+                        className={
+                          !answersOptions ? 'correctAnswer' : null
+                        }
+                        type="button"
+                        data-testid="correct-answer"
+                        disabled={ timer === 0 || respondido }
+                        onClick={ () => {
+                          addScore(this.calculatePoints(
+                            perguntas[currQuestion].difficulty,
+                          ));
+                          this.getAnswer();
+                          this.handleAnswers();
+                        } }
+                      >
+                        {answer}
+                      </button>
+                    ) : (
+                      <button
+                        key={ i }
+                        className={
+                          !answersOptions ? 'wrongAnswer' : null
+                        }
+                        type="button"
+                        data-testid={ `wrong-answer-${i}` }
+                        disabled={ timer === 0 || respondido }
+                        onClick={ () => {
+                          this.getAnswer();
+                          this.handleAnswers();
+                        } }
+                      >
+                        { answer }
+                      </button>
+                    )
+                ))
+              }
+              {(respondido || timer === 0) && (
+                <button
+                  className="next-question"
+                  data-testid="btn-next"
+                  type="button"
+                  onClick={ currQuestion !== FOUR
+                    ? () => this.nextQuestion()
+                    : () => history.push('/feedback') }
+                >
+                  Next
+                </button>
+              ) }
+            </section>
+            <div className="timer">
+              {/* <span>Timer: </span> */}
+              <span>{ timer }</span>
+            </div>
           </div>
-        </div>
+        </section>
       </>
     );
   }

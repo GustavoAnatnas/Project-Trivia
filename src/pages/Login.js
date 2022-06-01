@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { login } from '../redux/action';
+import '../css/login.css';
+import logo from '../trivia.png';
 
 class Login extends React.Component {
   state = {
@@ -44,12 +46,14 @@ handleClick = async () => {
     const { name, gravatarEmail, disabled } = this.state;
     const { ACTION_LOGIN } = this.props;
     return (
-      <>
-        <h1>Login</h1>
+      <div className="bodyLog">
+        <img src={ logo } className="App-logo" alt="logo" />
         <form>
           <label htmlFor="name">
             Nome
+            <br />
             <input
+              className="input-name"
               type="text"
               name="name"
               value={ name }
@@ -59,9 +63,12 @@ handleClick = async () => {
               placeholder="Digite seu Nome"
             />
           </label>
+          <br />
           <label htmlFor="gravatarEmail">
             Email
+            <br />
             <input
+              className="input-email"
               type="email"
               name="gravatarEmail"
               value={ gravatarEmail }
@@ -71,9 +78,11 @@ handleClick = async () => {
               placeholder="Digite seu Email"
             />
           </label>
+          <br />
           <input
             value="Play"
             type="button"
+            className="button"
             disabled={ disabled }
             data-testid="btn-play"
             onClick={ () => {
@@ -84,13 +93,14 @@ handleClick = async () => {
         </form>
         <Link to="/settings">
           <button
+            className="button"
             type="submit"
             data-testid="btn-settings"
           >
             Settings
           </button>
         </Link>
-      </>
+      </div>
     );
   }
 }
