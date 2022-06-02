@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { ACTION_RESET_SCORE } from '../redux/action';
+import '../css/ranking.css';
+import logoutpng from '../logout.png';
 
 class Logout extends React.Component {
   render() {
@@ -12,11 +14,13 @@ class Logout extends React.Component {
         to="/"
       >
         <button
+          className="logout-png"
           type="button"
           data-testid="btn-go-home"
           onClick={ () => resetScore() }
         >
-          Logout
+          {/* Logout */}
+          <img width="50px" src={ logoutpng } alt="logo" />
         </button>
       </Link>
     );

@@ -10,12 +10,12 @@ class Scoreboard extends Component {
       <>
         <h3>
           Total de pontos:
-          <p data-testid="feedback-total-score">{ score }</p>
         </h3>
+        <p data-testid="feedback-total-score">{ score }</p>
         <h3>
           Total de acertos:
-          <p data-testid="feedback-total-question">{ assertions }</p>
         </h3>
+        <p data-testid="feedback-total-question">{ assertions }</p>
       </>
     );
   }

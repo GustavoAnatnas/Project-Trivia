@@ -5,6 +5,8 @@ import { connect } from 'react-redux';
 import { ACTION_RESET_SCORE } from '../redux/action';
 import Header from '../components/Header';
 import Scoreboard from '../components/Scoreboard';
+import '../css/feedback.css';
+import rankingpng from '../ranking.png';
 
 class Feedback extends Component {
   componentDidMount() {
@@ -42,22 +44,27 @@ class Feedback extends Component {
             to="/ranking"
             data-testid="btn-ranking"
           >
-            Ranking
+            {/* Ranking */}
+            <img src={ rankingpng } className="ranking-png" alt="logo" />
           </Link>
         </div>
-        <h1 data-testid="feedback-text">
-          {assertions >= THREE ? 'Well Done!' : 'Could be better...'}
-        </h1>
-        <Scoreboard />
-        <Link to="/">
-          <button
-            type="submit"
-            data-testid="btn-play-again"
-            onClick={ () => resetScore() }
-          >
-            Play Again
-          </button>
-        </Link>
+        <main className="mainFeedback">
+          <h1 data-testid="feedback-text">
+            {assertions >= THREE ? 'Well Done!' : 'Could be better...'}
+          </h1>
+          <Scoreboard />
+
+          <Link to="/">
+            <button
+              className="restart-btn"
+              type="submit"
+              data-testid="btn-play-again"
+              onClick={ () => resetScore() }
+            >
+              Play Again
+            </button>
+          </Link>
+        </main>
       </>
     );
   }

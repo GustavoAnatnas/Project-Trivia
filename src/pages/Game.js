@@ -193,18 +193,20 @@ class Game extends React.Component {
                     )
                 ))
               }
-              {(respondido || timer === 0) && (
-                <button
-                  className="next-question"
-                  data-testid="btn-next"
-                  type="button"
-                  onClick={ currQuestion !== FOUR
-                    ? () => this.nextQuestion()
-                    : () => history.push('/feedback') }
-                >
-                  Next
-                </button>
-              ) }
+              <div>
+                {(respondido || timer === 0) && (
+                  <button
+                    className="next-question"
+                    data-testid="btn-next"
+                    type="button"
+                    onClick={ currQuestion !== FOUR
+                      ? () => this.nextQuestion()
+                      : () => history.push('/feedback') }
+                  >
+                    Next
+                  </button>
+                ) }
+              </div>
             </section>
             <div className="timer">
               {/* <span>Timer: </span> */}

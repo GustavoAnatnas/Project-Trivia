@@ -1,8 +1,9 @@
 .game {
   align-items: center;
-  background-color: rgba(255, 255, 255, 0.862);
-  border: 5px solid  rgb(178, 153, 220);
+  background-color: rgb(255 255 255);
+  border: 5px solid rgb(0 0 0 / 0%);
   border-radius: 60px;
+  box-shadow: 8px -8px 20px 10px rgb(156 157 199) , -8px 8px 20px 10px rgb(0 165 229);
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
@@ -23,8 +24,8 @@
 }
 
 button {
-  background-color: rgba(255, 255, 255, 0.862);
-  border: 1px solid rgb(82, 207, 254);
+  background-color: rgba(255, 255, 255, 0);
+  border: 1px solid rgb(0 165 229);
   border-radius: 30px;
   color: black;
   cursor: pointer;
@@ -34,18 +35,18 @@ button {
 }
 
 .next-question {
-  background-color: rgb(178, 153, 220);
+  background-color: rgb(156 157 199);
   color: white;
 }
 
 button:hover {
-  background-color: rgb(178, 153, 220);
+  background-color: rgb(156 157 199);
   box-shadow: 2px 3px rgb(203, 206, 209);
   color: white;
 }
 
 .timer {
-  border: 3px solid rgb(82, 207, 254);
+  border: 2px solid rgb(0 165 229);
   border-radius: 70px;
   color: black;
   font-size: large;

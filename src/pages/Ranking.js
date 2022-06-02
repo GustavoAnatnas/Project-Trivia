@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Logout from '../components/Logout';
+import '../css/ranking.css';
 
 class Ranking extends React.Component {
   state = {
@@ -31,24 +32,27 @@ class Ranking extends React.Component {
     const { ranking } = this.state;
     return (
       <>
+
         <h1 data-testid="ranking-title">Ranking</h1>
-        {
-          ranking.map(({ name, score, gravatarHash }, index) => (
-            <div key={ index }>
-              <img
-                src={ gravatarHash }
-                alt="avatar"
-              />
-              <p data-testid={ `player-name-${index}` }>
-                {name}
-              </p>
-              <span>Score: </span>
-              <span data-testid={ `player-score-${index}` }>
-                {score}
-              </span>
-            </div>
-          ))
-        }
+        <div className="rank">
+          {
+            ranking.map(({ name, score, gravatarHash }, index) => (
+              <div key={ index }>
+                <img
+                  src={ gravatarHash }
+                  alt="avatar"
+                />
+                <p data-testid={ `player-name-${index}` }>
+                  {name}
+                </p>
+                <span>Score: </span>
+                <span data-testid={ `player-score-${index}` }>
+                  {score}
+                </span>
+              </div>
+            ))
+          }
+        </div>
         <Logout />
       </>
     );

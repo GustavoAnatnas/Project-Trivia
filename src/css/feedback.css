@@ -1,0 +1,40 @@
+.mainFeedback {
+  align-content: stretch;
+  align-items: center;
+  background: rgb(255 255 255);
+  border-radius: 20px;
+  box-shadow: 8px -8px 20px 10px rgb(156 157 199) , -8px 8px 20px 10px rgb(0 165 229);
+  display: flex;
+  flex-direction: column;
+  height: 50%;
+  justify-content: flex-start;
+  position: absolute;
+  right: 25%;
+  top: 20%;
+  width: 50%;
+}
+
+.ranking-png {
+  display: flex;
+  height: 74px;
+  margin-left: auto;
+  position: inherit;
+  top: 41px;
+  transform: scale(1);
+  transition: 0.3s ease-in-out;
+  width: auto;
+}
+
+.ranking-png:hover {
+  border: 5px solid rgb(136, 137, 202);
+  border-radius: 50px;
+  filter: opacity(1);
+  transform: scale(1);
+}
+
+.restart-btn {
+  background: rgb(255 255 255);
+  border-radius: 20px;
+  height: 100px;
+  width: 200px;
+}

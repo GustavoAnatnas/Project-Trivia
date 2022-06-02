@@ -33,9 +33,9 @@ class Header extends Component {
             {name}
           </h4>
           {/* <span>Score: </span> */}
-          <h5 data-testid="header-score">
+          <p data-testid="header-score">
             {`Score: ${score}`}
-          </h5>
+          </p>
         </div>
 
       </>
